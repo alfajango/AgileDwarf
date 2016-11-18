@@ -209,22 +209,38 @@
         isNew = !!isNew;
         if (isNew)
         {
-            $('.task_subject', el).editable(Sprints.getUrl('taskinline'), $.extend({name: 'subject', type: 'ptext', placeholder: Sprints.l('task_subject_placeholder'), callback: function(value, settings)
-            {
-                var inlineEl = $(this);
-                inlineEl.editable('destroy');
-                addTaskInlines();
-                task.element.removeClass('new');
-            }}, taskInlineOpts)).click();
+            $('.task_subject', el).editable(
+              Sprints.getUrl('taskinline'),
+              $.extend({
+                  name: 'subject',
+                  type: 'ptext',
+                  placeholder: Sprints.l('task_subject_placeholder'),
+                  callback: function(value, settings)
+                    {
+                        var inlineEl = $(this);
+                        inlineEl.editable('destroy');
+                        addTaskInlines();
+                        task.element.removeClass('new');
+                    }
+              }, taskInlineOpts)
+            ).click();
         } else
             addTaskInlines(isNew);
         function addTaskInlines()
         {
-            $('.task_subject', el).editable(Sprints.getUrl('taskinline'), $.extend({name: 'subject', type: 'ptext', placeholder: Sprints.l('task_subject_placeholder'), callback: function (res, settings)
-            {
-                task.setSubject(res);
-                Sprints.Coop.update(task.id, 'task', 'subject', res);
-            }}, taskInlineOpts));
+            $('.task_subject', el).editable(
+              Sprints.getUrl('taskinline'),
+              $.extend({
+                name: 'subject',
+                type: 'ptext',
+                placeholder: Sprints.l('task_subject_placeholder'),
+                callback: function (res, settings)
+                  {
+                      task.setSubject(res);
+                      Sprints.Coop.update(task.id, 'task', 'subject', res);
+                  }
+              }, taskInlineOpts)
+            );
 
             $('.task_estimate', el).editable(Sprints.getUrl('taskinline'), $.extend({name: 'estimated_hours', type: 'ptext', placeholder: Sprints.l('task_estimate_placeholder'), callback: function (res, settings)
             {

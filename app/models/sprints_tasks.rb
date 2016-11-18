@@ -21,14 +21,20 @@ class SprintsTasks < Issue
       user = User.current.id if user == 'current'
       cond << user
     end
-    SprintsTasks.find(:all, :select => 'issues.*, sum(hours) as spent', :order => SprintsTasks::ORDER, :conditions => cond, :group => "issues.id",
-                      :joins => [:status], :joins => "left join time_entries ON time_entries.issue_id = issues.id", :include => [:assigned_to]).each{|task| tasks << task}
+    SprintsTasks.all.
+      joins(:status).
+      joins("left join time_entries ON time_entries.issue_id = issues.id").
+      includes(:assigned_to).
+      select('issues.*, sum(hours) as spent').
+      order(SprintsTasks::ORDER).
+      where(cond).
+      group("issues.id").each{|task| tasks << task}
     return tasks
   end
 
   def self.get_tasks_by_sprint(project, sprint)
     tasks = []
-    cond = ["project_id = ? and is_closed = ?", project.id, false]
+    cond = ["project_id = ? and #{IssueStatus.table_name}.is_closed = ?", project.id, false]
     unless sprint.nil?
       if sprint == 'null'
         cond[0] += ' and fixed_version_id is null'
@@ -37,7 +43,11 @@ class SprintsTasks < Issue
         cond << sprint
       end
     end
-    SprintsTasks.find(:all, :order => SprintsTasks::ORDER, :conditions => cond, :joins => :status, :include => :assigned_to).each{|task| tasks << task}
+    SprintsTasks.
+      joins(:status).
+      includes(:assigned_to).
+      order(SprintsTasks::ORDER).
+      where(cond).each{|task| tasks << task}
     return tasks
   end
 

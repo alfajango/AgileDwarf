@@ -25,6 +25,7 @@ class AdtaskinlController < ApplicationController
     attribs = Hash[*attribs.flatten]
     attribs['tracker_id'] = attribs['tracker_id'] || Setting.plugin_AgileDwarf[:tracker]
     attribs['author_id'] = User.current.id
+    attribs['priority_id'] = IssuePriority.where(is_default: true).first.id
     task = SprintsTasks.new(attribs)
     begin
       task.save!
@@ -73,7 +74,7 @@ class AdtaskinlController < ApplicationController
     attribs = attribs.flatten
     param_id = attribs[0]
     attribs = Hash[*attribs]
-    task = SprintsTasks.find(params[:id], :include => :assigned_to)
+    task = SprintsTasks.includes(:assigned_to).find(params[:id])
     begin
       task.init_journal(User.current)
       result = task.update_attributes(attribs)

@@ -2,13 +2,16 @@ class Sprints < Version
   unloadable
 
   validate :start_and_end_dates
+  attr_accessor :tasks
 
   class << self
     def open_sprints(project)
-      scoped(:order => 'ir_start_date ASC, ir_end_date ASC', :conditions => [ "status = 'open' and project_id = ?", project.id ])
+      where("status = 'open' and project_id = ?", project.id).
+      order(ir_start_date: :asc, ir_end_date: :asc)
     end
     def all_sprints(project)
-      scoped(:order => 'ir_start_date ASC, ir_end_date ASC', :conditions => [ "project_id = ?", project.id ])
+      where("project_id = ?", project.id).
+      order(ir_start_date: :asc, ir_end_date: :asc)
     end
   end
 
