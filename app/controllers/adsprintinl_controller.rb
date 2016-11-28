@@ -27,7 +27,17 @@ class AdsprintinlController < ApplicationController
     attribs = attribs.flatten
     param_id = attribs[0]
     attribs = Hash[*attribs]
+
+    if attribs["ir_start_date"].present? && attribs["ir_start_date"] =~ /\d{2}\/\d{2}\/\d{4}/
+      attribs["ir_start_date"] = Date.strptime(attribs["ir_start_date"], "%m/%d/%Y")
+    end
+
+    if attribs["ir_end_date"].present? && attribs["ir_end_date"] =~ /\d{2}\/\d{2}\/\d{4}/
+      attribs["ir_end_date"] = Date.strptime(attribs["ir_end_date"], "%m/%d/%Y")
+    end
+
     sprint = Sprints.find(params[:id])
+
     begin
       result = sprint.update_attributes(attribs)
     rescue => e
