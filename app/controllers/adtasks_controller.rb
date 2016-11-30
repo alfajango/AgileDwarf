@@ -12,7 +12,7 @@ class AdtasksController < ApplicationController
     @project.assignable_users.each{|u| @assignables_list[u.id] = u.firstname + ' ' + u.lastname}
 
     # filter values
-    @selected = params[:sprint] || (@sprints[0].nil? ? 'all' : @sprints[0].id.to_s)
+    @selected = params[:sprint] || 'all'
     case @selected
       when 'all'
         sprint = nil
@@ -21,7 +21,7 @@ class AdtasksController < ApplicationController
       else
         sprint = @selected
     end
-    user = @user = params[:user] || 'current'
+    user = @user = params[:user] || 'all'
     user = nil if @user == 'all'
 
     @plugin_path = File.join(Redmine::Utils.relative_url_root, 'plugin_assets', 'AgileDwarf')
